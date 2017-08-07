@@ -1,0 +1,20 @@
+/*
+#someid1 .someclass1:pseudoclass, 
+#someid1 .someclass1:pseudoclass 
+{ 
+  display:block;
+  margin:0 20px 0 10px;
+  border:1px solid grey;
+  color:#ccc; 
+  background:#000 url(some.png);
+}
+*/
+
+#playground 
+{ 
+	background-color: #000000;
+}
+
+#board {
+	background-color: #00005f;
+}
