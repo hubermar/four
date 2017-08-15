@@ -95,9 +95,10 @@ public class EventsEndpoint {
 		Player p = Player.valueOf(incoming.getPayload(Payload.PLAYER));
 		Integer column = Integer.valueOf(incoming.getPayload(Payload.COLUMN));
 		int rowInserted = service.insertCoin(board, p, column);
+		Player winner = service.evalWinner(board, column, rowInserted, p);
 		return Arrays.asList(
 			Event.newDraw(column, rowInserted, p),
-			Event.newNextPlayer(p.next())
+			winner == Player.UNDEF ? Event.newNextPlayer(p.next()) : Event.newWinner(winner)
 		);
 	}
 }

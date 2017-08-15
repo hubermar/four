@@ -22,8 +22,8 @@ public final class Event {
 		INSERT_COIN,
 		// server -> client
 		LOADED_BOARD,
-		INSERTED_COIN,
-		NEXT_PLAYER
+		NEXT_PLAYER, 
+		WINNER
 	}
 	
 	@XmlElement(name="type")
@@ -46,7 +46,7 @@ public final class Event {
 	}
 
 	public static Event newDraw(int column, int row, Player player) {
-		return create(Type.INSERTED_COIN, column, row, player);
+		return create(Type.INSERT_COIN, column, row, player);
 	}
 
 	public static Event newNextPlayer(Player player) {
@@ -55,6 +55,10 @@ public final class Event {
 
 	public static Event newLoaded(int width, int height, Player currentPlayer) {
 		return create(Type.LOADED_BOARD, width, height, currentPlayer);
+	}
+
+	public static Event newWinner(Player winner) {
+		return create(Type.WINNER, null, null, winner);
 	}
 
 	private static Event create(Type type, Integer column, Integer row, Player player) {

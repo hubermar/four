@@ -26,7 +26,7 @@ public class BoardService {
 	
 	public Board create(String id) {
 		Board board = new Board(id, COLUMNS, ROWS);
-		board.setPlayer(Player.ONE);
+		board.setPlayer(Player.RED);
 		dao.saveBoard(board);
 		return board;
 	}
@@ -44,7 +44,7 @@ public class BoardService {
 		return freeRow.intValue();
 	}
 	
-	public static Player evalWinner(Board board, int column, int row, Player player) {
+	public Player evalWinner(Board board, int column, int row, Player player) {
 		if (evalWinVertical(board, player, column, row) || 
 				evalWinHorizontal(board, player, column, row) || 
 				evalWinDiagonal(board, player, column, row)) {
@@ -54,7 +54,25 @@ public class BoardService {
 	}
 
 	static boolean evalWinDiagonal(Board board, Player player, int column, int row) {
+		boolean result = evalWinDiagonalImpl(board, player, column, row, 1);
+		if (!result) {
+			result = evalWinDiagonalImpl(board, player, column, row, -1);
+		}
+		return result;
+	}
+	
+	static boolean evalWinDiagonalImpl(Board board, Player player, int column, int row, int direction) {
 		int count = 0;
+		for (int i = -WIN * direction; i * direction <= WIN; i += direction) {			
+			int x = column + i;
+			int y = row + (i * direction);
+			if (x < 0 || x > board.getWidth() - 1 || y < 0 || y > board.getHeight() - 1) {
+				continue;
+			}
+			if (board.getCoin(x, y) == player) {
+				count++;
+			}
+		}
 		return count >= WIN;
 	}
 
@@ -105,10 +123,10 @@ public class BoardService {
 
 	public static Player evalNextPlayer(Player currentPlayer) {
 		switch (currentPlayer) {
-		case ONE:
-			return Player.TWO;
-		case TWO:
-			return Player.ONE;
+		case RED:
+			return Player.YELLOW;
+		case YELLOW:
+			return Player.RED;
 		default:
 			return Player.UNDEF;
 		}
