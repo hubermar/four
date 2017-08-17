@@ -78,10 +78,13 @@ public class EventsEndpoint {
 		switch (event.getType()) {
 		case REGISTER:
 			outgoing.addAll(handleRegister(id));
+			break;
 		case INSERT_COIN:
 			outgoing.addAll(handleInsert(id, event));
+			break;
 		case GET_BOARD:
 			outgoing.addAll(handleGetBoard(id));
+			break;
 		default:
 			LOG.warning("Unknown event=" + event);
 		}
