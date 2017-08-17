@@ -18,6 +18,7 @@ public final class Event {
 	
 	public enum Type {
 		// client -> server
+		REGISTER,
 		GET_BOARD,
 		INSERT_COIN,
 		// server -> client
@@ -45,7 +46,11 @@ public final class Event {
 		return Event.class.getSimpleName() + "[type=" + type + " payload=" + payload + "]";
 	}
 
-	public static Event newDraw(int column, int row, Player player) {
+	public static Event newRegister() {
+		return create(Type.REGISTER, null, null, null);
+	}
+
+	public static Event newInsert(int column, int row, Player player) {
 		return create(Type.INSERT_COIN, column, row, player);
 	}
 

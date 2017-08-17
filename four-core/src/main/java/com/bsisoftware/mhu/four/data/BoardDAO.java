@@ -24,4 +24,8 @@ public class BoardDAO {
 		LOG.info("saved board with id=" + b.getId());
 		return boards.put(b.getId(), b);
 	}
+
+	public void deleteBoard(String id) {
+		boards.remove(id);
+	}
 }

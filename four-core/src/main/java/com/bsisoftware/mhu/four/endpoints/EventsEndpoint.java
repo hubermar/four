@@ -1,6 +1,7 @@
 package com.bsisoftware.mhu.four.endpoints;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -40,14 +41,14 @@ public class EventsEndpoint {
     public void onMessage(Session session, Event incoming) throws IOException {
 		LOG.info("got incoming event=" + incoming);
 		List<Event> outgoing = handleEvent(session.getId(), incoming);
-		push(session, outgoing);
+		broadcast(session, outgoing);
     }
  
-    private void push(Session session, List<Event> events) {
-    	events.stream().forEach(e -> push(session, e));
+    private void broadcast(Session session, List<Event> events) {
+    	events.stream().forEach(e -> broadcast(session, e));
 	}
 
-	private void push(Session session, Event event) {
+	private void broadcast(Session session, Event event) {
 		Gson gson = new Gson();
 		Set<Session> allSessions = session.getOpenSessions();
 		for (Session s : allSessions) {
@@ -62,6 +63,7 @@ public class EventsEndpoint {
 
 	@OnClose
     public void onClose(Session session) throws IOException {
+		service.remove(session.getId());
         // WebSocket connection closes
     }
  
@@ -72,17 +74,25 @@ public class EventsEndpoint {
     }
     
 	private List<Event> handleEvent(String id, Event event) {
+		List<Event> outgoing = new ArrayList<>();
 		switch (event.getType()) {
+		case REGISTER:
+			outgoing.addAll(handleRegister(id));
 		case INSERT_COIN:
-			return handleInsert(id, event);
+			outgoing.addAll(handleInsert(id, event));
 		case GET_BOARD:
-			return handleNewOrGet(id);
+			outgoing.addAll(handleGetBoard(id));
 		default:
-			throw new IllegalArgumentException("Unknown event=" + event);
+			LOG.warning("Unknown event=" + event);
 		}
+		return outgoing;
 	}
 
-	private List<Event> handleNewOrGet(String id) {
+	private List<Event> handleRegister(String id) {
+		return Arrays.asList(Event.newRegister());
+	}
+
+	private List<Event> handleGetBoard(String id) {
 		Board board = service.getById(id);
 		if (board == null) {
 			board = service.create(id);
@@ -97,7 +107,7 @@ public class EventsEndpoint {
 		int rowInserted = service.insertCoin(board, p, column);
 		Player winner = service.evalWinner(board, column, rowInserted, p);
 		return Arrays.asList(
-			Event.newDraw(column, rowInserted, p),
+			Event.newInsert(column, rowInserted, p),
 			winner == Player.UNDEF ? Event.newNextPlayer(p.next()) : Event.newWinner(winner)
 		);
 	}

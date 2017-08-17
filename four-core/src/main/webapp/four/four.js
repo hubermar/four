@@ -3,8 +3,6 @@
 var Four = (function() {
 
 	// private
-	const SERVER_URL = "ws://localhost:3333/four/api/events";
-	
 	const COIN_SIZE = 100;
 	const COIN_HALF_SIZE = COIN_SIZE / 2;
 
@@ -25,7 +23,7 @@ var Four = (function() {
 	
 	var init = function() {
 		initCanvas();
-		socket = new WebSocket(SERVER_URL);
+		socket = new WebSocket(getServerAddress());
 		socket.onmessage = onMessage;
 		socket.onerror = function (error) {
 		  console.log('WebSocket Error ' + error);
@@ -36,6 +34,12 @@ var Four = (function() {
 			};
 			fireEvent(event);
 		};
+	}
+	
+	function getServerAddress() {
+		return "ws://" + window.location.host
+			+ window.location.pathname.slice(0, window.location.pathname.lastIndexOf("/"))
+			+ "/api/events"; 
 	}
 	
 	function onMessage(message) {

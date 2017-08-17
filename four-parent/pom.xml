@@ -9,7 +9,6 @@
 
 	<modules>
 		<module>../four-core</module>
-		<module>../four-server</module>
 		<module>../four-war</module>
 	</modules>
 

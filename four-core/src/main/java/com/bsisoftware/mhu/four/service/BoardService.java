@@ -31,6 +31,10 @@ public class BoardService {
 		return board;
 	}
 
+	public void remove(String id) {
+		dao.deleteBoard(id);
+	}
+
 	public Board getById(String id) {
 		return dao.getBoardById(id);
 	}

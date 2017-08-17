@@ -10,12 +10,14 @@ import com.bsisoftware.mhu.four.endpoints.EventsEndpoint;
 
 public class StandaloneTyrusServer {
 
+	private static final String PATH = "/four";
+	private static final int PORT = 3333;
+	
 	public static void main(String[] args) {
-		
 		Map<String, Object> properties = new HashMap<>();
 		properties.put(Server.STATIC_CONTENT_ROOT, "./src/main/webapp");
 		
-		Server server = new Server("localhost", Four.PORT, Four.CONTEXT + Four.API_BASE, properties, EventsEndpoint.class);
+		Server server = new Server("localhost", PORT, PATH + Four.API_BASE, properties, EventsEndpoint.class);
 		try {
             server.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

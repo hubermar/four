@@ -17,9 +17,7 @@
 		
 		<resources>
 			<resource>
-			<!-- 
-			 -->
-				<targetPath>../four</targetPath>
+				<targetPath>..</targetPath>
 				<directory>../four-core/src/main/webapp</directory>
 			</resource>
 		</resources>
